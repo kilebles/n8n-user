@@ -7,44 +7,59 @@ services:
     ports:
       - "5678:5678"
     environment:
-      # Core
       N8N_HOST: ${N8N_HOST}
       N8N_PORT: ${N8N_PORT}
       N8N_PROTOCOL: ${N8N_PROTOCOL}
       WEBHOOK_URL: ${WEBHOOK_URL}
+      WEBHOOK_TUNNEL_URL: ${WEBHOOK_TUNNEL_URL}
       GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
-
-      # Auth and security
+      TZ: ${TZ}
       N8N_BASIC_AUTH_ACTIVE: ${N8N_BASIC_AUTH_ACTIVE}
       N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
       N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
-
-      # Db
+      N8N_TRUSTED_PROXIES: loopback,linklocal,uniquelocal
       DB_TYPE: ${DB_TYPE}
       DB_POSTGRESDB_HOST: ${DB_POSTGRESDB_HOST}
       DB_POSTGRESDB_PORT: ${DB_POSTGRESDB_PORT}
       DB_POSTGRESDB_DATABASE: ${DB_POSTGRESDB_DATABASE}
       DB_POSTGRESDB_USER: ${DB_POSTGRESDB_USER}
       DB_POSTGRESDB_PASSWORD: ${DB_POSTGRESDB_PASSWORD}
-
-      # Redis
+      EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: ${REDIS_HOST}
       QUEUE_BULL_REDIS_PORT: ${REDIS_PORT}
-      EXECUTIONS_MODE: queue
-
-      # Integrations
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_GROUP_ID: ${TELEGRAM_GROUP_ID}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-
-      # Misc
-      TZ: ${TZ}
     volumes:
       - ./data/n8n:/home/node/.n8n
     depends_on:
       - postgres
       - redis
+
+  n8n-worker:
+    image: n8nio/n8n:latest
+    container_name: n8n-worker
+    restart: unless-stopped
+    command: worker
+    environment:
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: ${REDIS_HOST}
+      QUEUE_BULL_REDIS_PORT: ${REDIS_PORT}
+      DB_TYPE: ${DB_TYPE}
+      DB_POSTGRESDB_HOST: ${DB_POSTGRESDB_HOST}
+      DB_POSTGRESDB_PORT: ${DB_POSTGRESDB_PORT}
+      DB_POSTGRESDB_DATABASE: ${DB_POSTGRESDB_DATABASE}
+      DB_POSTGRESDB_USER: ${DB_POSTGRESDB_USER}
+      DB_POSTGRESDB_PASSWORD: ${DB_POSTGRESDB_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
+      TZ: ${TZ}
+    volumes:
+      - ./data/n8n:/home/node/.n8n
+    depends_on:
+      - redis
+      - postgres
 
   postgres:
     image: postgres:16-alpine
