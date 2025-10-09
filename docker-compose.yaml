@@ -54,6 +54,7 @@ services:
       DB_POSTGRESDB_PASSWORD: ${DB_POSTGRESDB_PASSWORD}
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
+      N8N_TRUSTED_PROXIES: "*"
       TZ: ${TZ}
     volumes:
       - ./data/n8n:/home/node/.n8n
