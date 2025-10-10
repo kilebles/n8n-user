@@ -11,12 +11,8 @@ services:
       N8N_PORT: ${N8N_PORT}
       N8N_PROTOCOL: ${N8N_PROTOCOL}
       WEBHOOK_URL: ${WEBHOOK_URL}
-      WEBHOOK_TUNNEL_URL: ${WEBHOOK_TUNNEL_URL}
       GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
       TZ: ${TZ}
-      N8N_BASIC_AUTH_ACTIVE: ${N8N_BASIC_AUTH_ACTIVE}
-      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
-      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       N8N_TRUSTED_PROXIES: loopback,linklocal,uniquelocal
       DB_TYPE: ${DB_TYPE}
@@ -50,17 +46,16 @@ services:
       DB_POSTGRESDB_DATABASE: ${DB_POSTGRESDB_DATABASE}
       DB_POSTGRESDB_USER: ${DB_POSTGRESDB_USER}
       DB_POSTGRESDB_PASSWORD: ${DB_POSTGRESDB_PASSWORD}
-
       EXECUTIONS_MODE: queue
       QUEUE_BULL_REDIS_HOST: ${REDIS_HOST}
       QUEUE_BULL_REDIS_PORT: ${REDIS_PORT}
-
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_GROUP_ID: ${TELEGRAM_GROUP_ID}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-
       GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
       TZ: ${TZ}
+      N8N_SKIP_WEBHOOK_CREATION: true
+      N8N_SKIP_WEBHOOK_DEREGISTRATION: true
     depends_on:
       - redis
       - postgres
@@ -78,11 +73,6 @@ services:
       TZ: ${TZ}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_POSTGRESDB_USER} -d ${DB_POSTGRESDB_DATABASE}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -91,17 +81,7 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./data/redis:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 networks:
   default:
     name: n8n_network
-
-volumes:
-  n8n_data:
-  postgres_data:
-  redis_data:
