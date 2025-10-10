@@ -37,30 +37,30 @@ services:
       - postgres
       - redis
 
-  n8n-worker:
+    n8n-worker:
       image: n8nio/n8n:latest
       container_name: n8n-worker
       user: "1000:1000"
       restart: unless-stopped
       environment:
-        - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
-        - DB_TYPE=${DB_TYPE}
-        - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
-        - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
-        - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
-        - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
-        - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+        N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+        DB_TYPE: ${DB_TYPE}
+        DB_POSTGRESDB_HOST: ${DB_POSTGRESDB_HOST}
+        DB_POSTGRESDB_PORT: ${DB_POSTGRESDB_PORT}
+        DB_POSTGRESDB_DATABASE: ${DB_POSTGRESDB_DATABASE}
+        DB_POSTGRESDB_USER: ${DB_POSTGRESDB_USER}
+        DB_POSTGRESDB_PASSWORD: ${DB_POSTGRESDB_PASSWORD}
 
-        - EXECUTIONS_MODE=queue
-        - QUEUE_BULL_REDIS_HOST=${REDIS_HOST}
-        - QUEUE_BULL_REDIS_PORT=${REDIS_PORT}
+        EXECUTIONS_MODE: queue
+        QUEUE_BULL_REDIS_HOST: ${REDIS_HOST}
+        QUEUE_BULL_REDIS_PORT: ${REDIS_PORT}
 
-        - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-        - TELEGRAM_GROUP_ID=${TELEGRAM_GROUP_ID}
-        - OPENAI_API_KEY=${OPENAI_API_KEY}
+        TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+        TELEGRAM_GROUP_ID: ${TELEGRAM_GROUP_ID}
+        OPENAI_API_KEY: ${OPENAI_API_KEY}
 
-        - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
-        - TZ=${TZ}
+        GENERIC_TIMEZONE: ${GENERIC_TIMEZONE}
+        TZ: ${TZ}
       depends_on:
         - redis
         - postgres
