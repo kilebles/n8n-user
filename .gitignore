@@ -40,8 +40,10 @@ certs/
 *.key
 *.pem
 *.csr
+faq.csv
 
 __pycache__/
 *.sqlite
 *.db
 *.dump
+n8n_dump.sql
